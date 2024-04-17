@@ -3,32 +3,26 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
+using UnityEngine.SceneManagement;
 
 public class JumpingTest
 {
-    // A Test behaves as an ordinary method
-    [Test]
-    public void JumpingTestSimplePasses()
-    {
-        // Use the Assert class to test conditions
-    }
-
-    // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-    // `yield return null;` to skip a frame.
+    
     [UnityTest]
     public IEnumerator JumpingTestWithEnumeratorPasses()
     {
-        GameObject player = UnityEngine.Object.Instantiate(Resources.Load<GameObject>("Player"));
+        yield return UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("Lv1");
+        GameObject player = GameObject.FindWithTag("Player");
+        Assert.IsNotNull(player, "Player Game Object not found.");
         Vector3 initialPosition = player.transform.position;
-        yield return null;
-
+        Player playerScript = player.GetComponent<Player>();
 
         Input.GetKeyDown(KeyCode.Space);
+       
 
         yield return new WaitForSeconds(1);
 
-        
-         Assert.AreNotEqual(initialPosition,player.transform.position);
+        Assert.AreNotEqual(initialPosition,player.transform.position);
         // Use the Assert class to test conditions.
         // Use yield to skip a frame.
         

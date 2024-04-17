@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,11 +35,12 @@ public class Player : MonoBehaviour
     public LayerMask wallLayer;
 
     public TrailRenderer tr;
-
+    public event Action OnJump;
+   
     // Start is called before the first frame update
     void Start()
     {
-    
+         rb = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -55,23 +57,26 @@ public class Player : MonoBehaviour
         {
             doubleJump = false;
         }
+        
 
-        if(Input.GetButtonDown("Jump"))
-        {
-            if(IsGrounded() || doubleJump || IsGroundedOnWall())
+            if(Input.GetButtonDown("Jump"))
             {
-                rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
+                if(IsGrounded() || doubleJump || IsGroundedOnWall())
+                {
+                    //OnJump?.Invoke();
+                    rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
 
-                doubleJump = !doubleJump;
+                    doubleJump = !doubleJump;
+                }
             }
-        }
+        
 
         if(Input.GetButtonUp("Jump") && rb.velocity.y > 0f)
         {
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
         }
 
-        if(Input.GetKeyDown(KeyCode.LeftShift) && canDash)
+        if(Input.GetKeyDown(KeyCode.C) && canDash)
         {
             StartCoroutine(Dash());
         }
@@ -87,7 +92,10 @@ public class Player : MonoBehaviour
         }
     }
 
-    
+    private void SpaceButtonPress()
+    {
+        Input.GetKeyDown(KeyCode.Space);
+    }
     /// This function is called every fixed framerate frame, if the MonoBehaviour is enabled.
     /// </summary>
     private void FixedUpdate()
@@ -106,9 +114,13 @@ public class Player : MonoBehaviour
 
     private bool IsGrounded()
     {
+        if (groundCheck == null)
+        {
+            Debug.LogError("Ground check object is not assigned!");
+            return false;
+        }
         return Physics2D.OverlapCircle(groundCheck.position, 0.2f, groundLayer);
-        
-
+    
     }
 
     private bool IsGroundedOnWall()
@@ -199,4 +211,26 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(dashingCooldown);
         canDash = true;
     }
+
+    public void Jump()
+        {
+
+           
+                if(IsGrounded() || doubleJump || IsGroundedOnWall())
+                {
+                    //OnJump?.Invoke();
+                    rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
+                    
+                    doubleJump = !doubleJump;
+
+                }
+            
+        }
+
+    public void ButtonDash()
+    {
+        StartCoroutine(Dash());
+    }
+
+    
 }

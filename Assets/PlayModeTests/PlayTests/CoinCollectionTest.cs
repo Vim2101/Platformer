@@ -35,7 +35,7 @@ public class CoinCollectionTest
 
             player.transform.position = coin.transform.position;
             
-            yield return null;
+            yield return new WaitForSeconds(2);
         }
 
         int currentCoinAmount = coinCollect.GetCurrentCoinAmount();

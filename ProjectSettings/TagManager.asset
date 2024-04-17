@@ -6,6 +6,8 @@ TagManager:
   tags:
   - GameManager
   - Coin
+  - Button
+  - DashButton
   layers:
   - Default
   - TransparentFX
